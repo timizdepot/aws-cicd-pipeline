@@ -160,11 +160,11 @@ output "server_instance_id" {
   value = aws_instance.web-server.id
 }
 
-resource "aws_volume_attachment" "ebs_att" {
-  device_name = "/dev/sdf1"
-  volume_id   = aws_ebs_volume.ebs1.id
-  instance_id = aws_instance.web-server.id
-}
+# resource "aws_volume_attachment" "ebs_att" {
+#   device_name = "/dev/sda1"
+#   volume_id   = aws_ebs_volume.ebs1.id
+#   instance_id = aws_instance.web-server.id
+# }
 # create ubuntu server and install/enable apache2
 resource "aws_instance" "web-server" {
   ami               = "ami-04505e74c0741db8d"
@@ -191,7 +191,7 @@ resource "aws_instance" "web-server" {
     Name = "jenkins-server"
   }
 }
-resource "aws_ebs_volume" "ebs1" {
-  availability_zone = "us-east-1a"
-  size              = 30
-}
+# resource "aws_ebs_volume" "ebs1" {
+#   availability_zone = "us-east-1a"
+#   size              = 30
+# }
