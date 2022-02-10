@@ -140,6 +140,7 @@ resource "aws_volume_attachment" "ebs_att" {
   device_name = "/dev/sda1"
   volume_id   = aws_ebs_volume.ebs1.id
   instance_id = aws_instance.web-server.id
+  depends_on  = [aws_ebs_volume.ebs1,aws_instance.web-server]
 }
 
 resource "aws_ebs_volume" "ebs1" {
