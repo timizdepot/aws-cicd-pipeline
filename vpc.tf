@@ -136,6 +136,17 @@ resource "aws_network_interface" "ani" {
   #   instance     = aws_instance.web-server.id
   #   device_index = 1
   # }
+resource "aws_volume_attachment" "ebs_att" {
+  device_name = "/dev/sda1"
+  volume_id   = aws_ebs_volume.ebs1.id
+  instance_id = aws_instance.web-server.id
+}
+
+resource "aws_ebs_volume" "ebs1" {
+  availability_zone = "us-east-1a"
+  size              = 30
+}
+
 }
 # assign an elastic IP to the network interface
 resource "aws_eip" "eip" {
@@ -162,7 +173,6 @@ resource "aws_instance" "web-server" {
   instance_type     = "t2.micro"
   availability_zone = "us-east-1a"
   key_name          = "dansweet"
-  volume_size       = "30"
 
   network_interface {
     device_index = 0
