@@ -136,17 +136,9 @@ resource "aws_network_interface" "ani" {
   #   instance     = aws_instance.web-server.id
   #   device_index = 1
   # }
-resource "aws_volume_attachment" "ebs_att" {
-  device_name = "/dev/sda1"
-  volume_id   = aws_ebs_volume.ebs1.id
-  instance_id = aws_instance.web-server.id
-  depends_on  = [aws_ebs_volume.ebs1,aws_instance.web-server]
-}
 
-resource "aws_ebs_volume" "ebs1" {
-  availability_zone = "us-east-1a"
-  size              = 30
-}
+
+
 
 }
 # assign an elastic IP to the network interface
@@ -168,6 +160,11 @@ output "server_instance_id" {
   value = aws_instance.web-server.id
 }
 
+resource "aws_volume_attachment" "ebs_att" {
+  device_name = "/dev/sda1"
+  volume_id   = aws_ebs_volume.ebs1.id
+  instance_id = aws_instance.web-server.id
+}
 # create ubuntu server and install/enable apache2
 resource "aws_instance" "web-server" {
   ami               = "ami-04505e74c0741db8d"
@@ -193,4 +190,8 @@ resource "aws_instance" "web-server" {
   tags = {
     Name = "jenkins-server"
   }
+}
+resource "aws_ebs_volume" "ebs1" {
+  availability_zone = "us-east-1a"
+  size              = 30
 }
