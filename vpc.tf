@@ -89,6 +89,14 @@ resource "aws_security_group" "web_access" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+  ingress {
+    description      = "HTTP"
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
    ingress {
     description      = "HTTPS"
     from_port        = 443
@@ -163,12 +171,14 @@ resource "aws_instance" "web-server" {
               #!/bin/bash
               apt update -y
               apt full-upgrade -y
-              apt install apache2 -y
-              systemctl start apache2
-              bash -c 'echo My beautiful webpage > /var/www/html/index.html'
+              # download jenkins and run it using java jdk 11
+              add-apt-repository ppa:openjdk-r/ppa
+              apt install openjdk-11-jdk -y
+              wget https://updates.jenkins-ci.org/download/war/2.330/jenkins.war
+              nohup java -jar jenkins.war &
               EOF
 
   tags = {
-    Name = "web-server"
+    Name = "jenkins-server"
   }
 }
