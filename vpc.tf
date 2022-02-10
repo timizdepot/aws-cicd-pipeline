@@ -162,6 +162,7 @@ resource "aws_instance" "web-server" {
   instance_type     = "t2.micro"
   availability_zone = "us-east-1a"
   key_name          = "dansweet"
+  volume_size       = "30"
 
   network_interface {
     device_index = 0
