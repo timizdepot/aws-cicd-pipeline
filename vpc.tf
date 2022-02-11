@@ -178,12 +178,41 @@ resource "aws_instance" "web-server" {
               # download jenkins and run it using java jdk 11
               add-apt-repository ppa:openjdk-r/ppa
               apt install openjdk-11-jdk -y
-              wget https://updates.jenkins-ci.org/download/war/2.330/jenkins.war
+              wget https://updates.jenkins-ci.org/download/war/2.334/jenkins.war
               nohup java -jar jenkins.war &
               EOF
 
   tags = {
     Name = "jenkins-server"
+  }
+  # root disk
+  root_block_device {
+    volume_size           = "30"
+    volume_type           = "gp2"
+    encrypted             = false
+    delete_on_termination = true
+  }
+}
+
+resource "aws_instance" "tomcat-server" {
+  ami               = "ami-0b0af3577fe5e3532"
+  instance_type     = "t2.micro"
+  availability_zone = "us-east-1a"
+  key_name          = "dansweet"
+
+  network_interface {
+    device_index = 0
+    network_interface_id = aws_network_interface.ani.id
+  }
+  user_data = <<-EOF
+              #!/bin/bash
+              yum update -y
+              yum install java-11-openjdk.x86_64 wget -y
+              wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.16/bin/apache-tomcat-10.0.16.tar.gz
+              EOF
+
+  tags = {
+    Name = "tomcat-server"
   }
   # root disk
   root_block_device {
