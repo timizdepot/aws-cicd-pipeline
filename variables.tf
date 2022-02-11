@@ -88,12 +88,3 @@ variable "db_username" {
 variable "db_password" {
   description = "Database Password"
 }
-
-variable "root_block_device" {
-  description = "root block device"
-  volume_size           = "30"
-  volume_type           = "gp2"
-  encrypted             = false
-  delete_on_termination = true
-    
-}
