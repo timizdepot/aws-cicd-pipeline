@@ -56,20 +56,20 @@ variable "private_subnet2_az" {
 #   description = "Public Key path"
 # }
 
-# variable "ami1" {
-#   description = "Redhat Linux Image"
-#   default = "ami-0b0af3577fe5e3532"
-# }
+variable "ami1" {
+  description = "Redhat Linux Image"
+  default = "ami-0b0af3577fe5e3532"
+}
 
-# variable "ami2" {
-#   description = "Ubuntu Linux Image"
-#   default = "ami-04505e74c0741db8d"
-# }
+variable "ami2" {
+  description = "Ubuntu Linux Image"
+  default = "ami-04505e74c0741db8d"
+}
 
-# variable "instance_type" {
-#   description = "Server Instance Type"
-#   default = "t2.micro"
-# }
+variable "instance_type" {
+  description = "Server Instance Type"
+  default = "t2.micro"
+}
 
 # variable "engine" {
 #   description = "RDS Engine"
