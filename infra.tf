@@ -171,7 +171,7 @@ resource "aws_instance" "wb2" {
   ami               = "${var.ami1}"
   instance_type     = "${var.instance_type}"
   availability_zone = "${var.public_subnet2_az}"
-  key_name          = "${aws_key_pair.default.id}"
+  key_name          = "dansweet"
   vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
   subnet_id = "${aws_subnet.public-subnet2.id}"
   associate_public_ip_address = true
