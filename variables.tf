@@ -52,39 +52,39 @@ variable "private_subnet2_az" {
   default = "us-east-1d"
 }
 
-variable "key_path" {
-  description = "Public Key path"
-}
+# variable "key_path" {
+#   description = "Public Key path"
+# }
 
-variable "ami1" {
-  description = "Redhat Linux Image"
-  default = "ami-0b0af3577fe5e3532"
-}
+# variable "ami1" {
+#   description = "Redhat Linux Image"
+#   default = "ami-0b0af3577fe5e3532"
+# }
 
-variable "ami2" {
-  description = "Ubuntu Linux Image"
-  default = "ami-04505e74c0741db8d"
-}
+# variable "ami2" {
+#   description = "Ubuntu Linux Image"
+#   default = "ami-04505e74c0741db8d"
+# }
 
-variable "instance_type" {
-  description = "Server Instance Type"
-  default = "t2.micro"
-}
+# variable "instance_type" {
+#   description = "Server Instance Type"
+#   default = "t2.micro"
+# }
 
-variable "engine" {
-  description = "RDS Engine"
-  default = "mysql"
-}
+# variable "engine" {
+#   description = "RDS Engine"
+#   default = "mysql"
+# }
 
-variable "db_name" {
-  description = "Database Name"
-  default = "mydb"
-}
+# variable "db_name" {
+#   description = "Database Name"
+#   default = "mydb"
+# }
 
-variable "db_username" {
-  description = "Database Username"
-}
+# variable "db_username" {
+#   description = "Database Username"
+# }
 
-variable "db_password" {
-  description = "Database Password"
-}
+# variable "db_password" {
+#   description = "Database Password"
+# }
