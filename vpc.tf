@@ -61,7 +61,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id     = aws_vpc.dev-vpc.id
 
   tags = {
-    Name = "dev subnet"
+    Name = "dev igw"
   }
 }
 # create custom route table
@@ -85,7 +85,7 @@ resource "aws_route_table" "dev-pub-rt" {
 
 # associate subnet with route table
 resource "aws_route_table_association" "rta" {
-  subnet_id      = aws_subnet.subnet1.id
+  subnet_id      = [aws_subnet.subnet1.id, aws_subnet.subnet2.id,aws_subnet.subnet3.id]
   route_table_id = aws_route_table.dev-pub-rt.id
 }
 # create security group to allow port 22, 80, and 443
@@ -141,8 +141,8 @@ resource "aws_security_group" "web_access" {
 }
 # create a network interface with an ip in the subnet that was created
 resource "aws_network_interface" "ani" {
-  subnet_id       = aws_subnet.subnet1.id
-  private_ips     = ["10.6.1.5"]
+  subnet_id       = [aws_subnet.subnet1.id, aws_subnet.subnet2.id,aws_subnet.subnet3.id]
+  private_ips     = ["10.6.1.5","10.6.5.5","10.6.10.5"]
   security_groups = [aws_security_group.web_access.id]
 
   # attachment {
@@ -158,7 +158,7 @@ resource "aws_network_interface" "ani" {
 resource "aws_eip" "eip" {
   vpc                       = true
   network_interface         = aws_network_interface.ani.id
-  associate_with_private_ip = "10.6.1.5"
+  associate_with_private_ip = ["10.6.1.5","10.6.5.5","10.6.10.5"]
   depends_on                = [aws_internet_gateway.igw,aws_vpc.dev-vpc]
 }
 # create an output to get the public IP address
