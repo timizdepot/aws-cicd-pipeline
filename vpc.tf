@@ -22,27 +22,40 @@ resource "aws_vpc" "dev-vpc" {
 # create a subnet
 resource "aws_subnet" "subnet1" {
   vpc_id     = aws_vpc.dev-vpc.id
-  cidr_block = var.subnet_prefix
-  #cidr_block = var.subnet_prefix[0]
+  #cidr_block = var.subnet_prefix
+  cidr_block = var.subnet_prefix[0]
   #cidr_block = var.subnet_prefix[0].cidr_block
   availability_zone = "us-east-1a"
 
   tags = {
-    Name = "dev_subnet"
+    Name = "dev_subnet1"
     #Name = var.subnet_prefix[0].name
   }
 }
-# resource "aws_subnet" "subnet2" {
-#   vpc_id     = aws_vpc.dev-vpc.id
-#   cidr_block = var.subnet_prefix
-#   #cidr_block = var.subnet_prefix[1]
-#   #cidr_block = var.subnet_prefix[1].cidr_block
-#   availability_zone = "us-east-1a"
+resource "aws_subnet" "subnet2" {
+  vpc_id     = aws_vpc.dev-vpc.id
+  #cidr_block = var.subnet_prefix
+  cidr_block = var.subnet_prefix[1]
+  #cidr_block = var.subnet_prefix[1].cidr_block
+  availability_zone = "us-east-1b"
 
-#   tags = {
-#     Name = var.subnet_prefix[1].name
-#   }
-# }
+  tags = {
+    Name  = "dev_subnet2"
+    #Name = var.subnet_prefix[1].name
+  }
+}
+resource "aws_subnet" "subnet3" {
+  vpc_id     = aws_vpc.dev-vpc.id
+  #cidr_block = var.subnet_prefix
+  cidr_block = var.subnet_prefix[2]
+  #cidr_block = var.subnet_prefix[1].cidr_block
+  availability_zone = "us-east-1c"
+
+  tags = {
+    Name  = "dev_subnet3"
+    #Name = var.subnet_prefix[1].name
+  }
+}
 # create internet gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id     = aws_vpc.dev-vpc.id
@@ -199,7 +212,7 @@ resource "aws_instance" "web-server" {
 resource "aws_instance" "tomcat-server" {
   ami               = "ami-0b0af3577fe5e3532"
   instance_type     = "t2.micro"
-  availability_zone = "us-east-1a"
+  availability_zone = "us-east-1b"
   key_name          = "dansweet"
 
   network_interface {
