@@ -28,7 +28,7 @@ data "aws_iam_policy_document" "tf-cicd-pipeline-policies" {
     }
     statement{
         sid = ""
-        actions = ["cloudwatch:*", "s3:GetObject", "s3:PutObject", "s3:DeleteObject", "dynamodb:GetItem","dynamodb:PutItem","dynamodb:DeleteItem", "codebuild:*"]
+        actions = ["cloudwatch:*", "s3:*", "dynamodb:GetItem","dynamodb:PutItem","dynamodb:DeleteItem", "codebuild:*"]
         resources = ["*"]
         effect = "Allow"
     }
@@ -71,7 +71,7 @@ EOF
 data "aws_iam_policy_document" "tf-cicd-build-policies" {
     statement{
         sid = ""
-        actions = ["logs:*", "s3:*", "codebuild:*", "secretsmanager:*","iam:*"]
+        actions = ["logs:*", "s3:*", "codebuild:*", "secretsmanager:*","dynamodb:GetItem","dynamodb:PutItem","dynamodb:DeleteItem","iam:*"]
         resources = ["*"]
         effect = "Allow"
     }
