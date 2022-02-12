@@ -1,9 +1,10 @@
 terraform{
     backend "s3" {
-        bucket = "aws-cicd-pipe"
+        bucket = "aws-tf-cicd-timiz"
         encrypt = true
         key = "terraform.tfstate"
         region = "us-east-1"
+        dynamodb_table = "tf-state-lock"
     }
 }
 
