@@ -202,3 +202,27 @@ resource "aws_instance" "wb2" {
     delete_on_termination = true
   }
 }
+
+resource "aws_instance" "wb1" {
+  ami               = "${var.ami2}"
+  instance_type     = "${var.instance_type}"
+  availability_zone = "${var.public_subnet1_az}"
+  key_name          = "dansweet"
+  vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
+  subnet_id = "${aws_subnet.public-subnet1.id}"
+  associate_public_ip_address = true
+  user_data = "${file("ansible.sh")}"
+  # network_interface {
+  #   device_index = 0
+  #   network_interface_id = aws_network_interface.ani.id
+  # }
+  tags = {
+    Name = "ansible-master"
+  }
+  root_block_device {
+    volume_size           = "30"
+    volume_type           = "gp2"
+    encrypted             = false
+    delete_on_termination = true
+  }
+}
