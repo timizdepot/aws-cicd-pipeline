@@ -204,7 +204,7 @@ resource "aws_instance" "wb2" {
 }
 
 resource "aws_instance" "wb3" {
-  ami               = "${var.ami2}"
+  ami               = "${var.ami1}"
   instance_type     = "${var.instance_type}"
   availability_zone = "${var.public_subnet1_az}"
   key_name          = "dansweet"
