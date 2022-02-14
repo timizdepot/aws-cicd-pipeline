@@ -9,3 +9,9 @@ cd apache-tomcat-9.0.58/bin/
 chmod +x startup.sh shutdown.sh
 ln -s /opt/apache-tomcat-9.0.58/bin/startup.sh /usr/bin/tomcatup
 ln -s /opt/apache-tomcat-9.0.58/bin/shutdown.sh /usr/bin/tomcatdown
+sed 's/PasswordAuthentication no/PasswordAuthentication yes/' -i /etc/ssh/sshd_config
+systemctl restart sshd
+service sshd restart
+useradd ansadmin
+echo "ansadmin" | passwd --stdin ansadmin
+systemctl enable sshd
