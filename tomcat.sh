@@ -1,6 +1,7 @@
 #!/bin/bash
-yum update -y
-yum install java-11-openjdk.x86_64 wget -y
+apt update && apt full-upgrade -y
+add-apt-repository ppa:openjdk-r/ppa
+apt install openjdk-11-jdk wget -y
 cd /opt/
 wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.58/bin/apache-tomcat-9.0.58.tar.gz
 tar -xvzf apache-tomcat-9.0.58.tar.gz

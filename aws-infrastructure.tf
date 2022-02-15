@@ -182,7 +182,7 @@ resource "aws_instance" "wb1" {
 }
 
 resource "aws_instance" "wb2" {
-  ami               = "${var.ami1}"
+  ami               = "${var.ami2}"
   instance_type     = "${var.instance_type}"
   availability_zone = "${var.public_subnet2_az}"
   key_name          = "dansweet"
@@ -204,7 +204,7 @@ resource "aws_instance" "wb2" {
 }
 
 resource "aws_instance" "wb3" {
-  ami               = "${var.ami1}"
+  ami               = "${var.ami2}"
   instance_type     = "${var.instance_type}"
   availability_zone = "${var.public_subnet1_az}"
   key_name          = "dansweet"
