@@ -226,3 +226,27 @@ resource "aws_instance" "wb3" {
     delete_on_termination = true
   }
 }
+
+resource "aws_instance" "wb4" {
+  ami               = "${var.ami2}"
+  instance_type     = "${var.instance_type}"
+  availability_zone = "${var.public_subnet2_az}"
+  key_name          = "dansweet"
+  vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
+  subnet_id = "${aws_subnet.public-subnet2.id}"
+  associate_public_ip_address = true
+  user_data = "${file("nginx.sh")}"
+  # network_interface {
+  #   device_index = 0
+  #   network_interface_id = aws_network_interface.ani.id
+  # }
+  tags = {
+    Name = "nginx"
+  }
+  root_block_device {
+    volume_size           = "30"
+    volume_type           = "gp2"
+    encrypted             = false
+    delete_on_termination = true
+  }
+}

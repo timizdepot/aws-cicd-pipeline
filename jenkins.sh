@@ -1,6 +1,10 @@
 #!/bin/bash
-apt update -y
-apt full-upgrade -y
+apt update -y && apt full-upgrade -y
+sed 's/PasswordAuthentication no/PasswordAuthentication yes/' -i /etc/ssh/sshd_config
+systemctl restart sshd
+service sshd restart
+useradd jenadmin
+echo "jenadmin" | passwd --stdin jenadmin
 # download jenkins and run it using java jdk 11
 add-apt-repository ppa:openjdk-r/ppa
 apt install openjdk-11-jdk wget -y
