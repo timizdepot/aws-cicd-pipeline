@@ -3,8 +3,8 @@ phases:
   pre_build:
     commands:
       - terraform init
-      - terraform validate -lock=false
+      - terraform validate
   
   build:
     commands:
-      - terraform apply --auto-approve -lock=false
+      - terraform apply --auto-approve
