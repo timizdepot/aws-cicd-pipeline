@@ -157,96 +157,140 @@ resource "aws_security_group" "wpsg" {
 #   }
 # }
 
-resource "aws_instance" "wb1" {
-  ami               = "${var.ami2}"
-  instance_type     = "${var.instance_type}"
-  availability_zone = "${var.public_subnet1_az}"
-  key_name          = "dansweet"
-  vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
-  subnet_id = "${aws_subnet.public-subnet1.id}"
-  associate_public_ip_address = true
-  user_data = "${file("jenkins.sh")}"
-  # network_interface {
-  #   device_index = 0
-  #   network_interface_id = aws_network_interface.ani.id
-  # }
-  tags = {
-    Name = "jenkins-server"
-  }
-  root_block_device {
-    volume_size           = "30"
-    volume_type           = "gp2"
-    encrypted             = false
-    delete_on_termination = true
-  }
+# resource "aws_instance" "wb1" {
+#   ami               = "${var.ami2}"
+#   instance_type     = "${var.instance_type}"
+#   availability_zone = "${var.public_subnet1_az}"
+#   key_name          = "dansweet"
+#   vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
+#   subnet_id = "${aws_subnet.public-subnet1.id}"
+#   associate_public_ip_address = true
+#   user_data = "${file("jenkins.sh")}"
+#   # network_interface {
+#   #   device_index = 0
+#   #   network_interface_id = aws_network_interface.ani.id
+#   # }
+#   tags = {
+#     Name = "jenkins-server"
+#   }
+#   root_block_device {
+#     volume_size           = "30"
+#     volume_type           = "gp2"
+#     encrypted             = false
+#     delete_on_termination = true
+#   }
+# }
+
+# resource "aws_instance" "wb2" {
+#   ami               = "${var.ami2}"
+#   instance_type     = "${var.instance_type}"
+#   availability_zone = "${var.public_subnet2_az}"
+#   key_name          = "dansweet"
+#   vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
+#   subnet_id = "${aws_subnet.public-subnet2.id}"
+#   associate_public_ip_address = true
+#   user_data = "${file("tomcat.sh")}"
+
+#   tags = {
+#     Name = "tomcat-server"
+#   }
+#   # root disk
+#   root_block_device {
+#     volume_size           = "30"
+#     volume_type           = "gp2"
+#     encrypted             = false
+#     delete_on_termination = true
+#   }
+# }
+
+# resource "aws_instance" "wb3" {
+#   ami               = "${var.ami2}"
+#   instance_type     = "${var.instance_type}"
+#   availability_zone = "${var.public_subnet1_az}"
+#   key_name          = "dansweet"
+#   vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
+#   subnet_id = "${aws_subnet.public-subnet1.id}"
+#   associate_public_ip_address = true
+#   user_data = "${file("ansible.sh")}"
+#   # network_interface {
+#   #   device_index = 0
+#   #   network_interface_id = aws_network_interface.ani.id
+#   # }
+#   tags = {
+#     Name = "ansible-master"
+#   }
+#   root_block_device {
+#     volume_size           = "30"
+#     volume_type           = "gp2"
+#     encrypted             = false
+#     delete_on_termination = true
+#   }
+# }
+
+# resource "aws_instance" "wb4" {
+#   ami               = "${var.ami2}"
+#   instance_type     = "${var.instance_type}"
+#   availability_zone = "${var.public_subnet2_az}"
+#   key_name          = "dansweet"
+#   vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
+#   subnet_id = "${aws_subnet.public-subnet2.id}"
+#   associate_public_ip_address = true
+#   user_data = "${file("nginx.sh")}"
+#   # network_interface {
+#   #   device_index = 0
+#   #   network_interface_id = aws_network_interface.ani.id
+#   # }
+#   tags = {
+#     Name = "nginx"
+#   }
+#   root_block_device {
+#     volume_size           = "30"
+#     volume_type           = "gp2"
+#     encrypted             = false
+#     delete_on_termination = true
+#   }
+# }
+
+resource "aws_sns_topic" "db_alarms" {
+  name = "aurora-db-alarms"
 }
 
-resource "aws_instance" "wb2" {
-  ami               = "${var.ami2}"
-  instance_type     = "${var.instance_type}"
-  availability_zone = "${var.public_subnet2_az}"
-  key_name          = "dansweet"
-  vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
-  subnet_id = "${aws_subnet.public-subnet2.id}"
-  associate_public_ip_address = true
-  user_data = "${file("tomcat.sh")}"
+module "aurora_db_57" {
+  source  = "claranet/aurora/aws"
+  version = "x.y.z"
 
-  tags = {
-    Name = "tomcat-server"
-  }
-  # root disk
-  root_block_device {
-    volume_size           = "30"
-    volume_type           = "gp2"
-    encrypted             = false
-    delete_on_termination = true
-  }
+  engine                              = "aurora-mysql"
+  engine-version                      = "5.7.12"
+  name                                = "test-aurora-db-57"
+  envname                             = "test-57"
+  envtype                             = "test"
+  subnets                             = module.vpc.private_subnet_ids
+  azs                                 = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  replica_count                       = "1"
+  security_groups                     = [aws_security_group.allow_all.id]
+  instance_type                       = "db.t2.micro"
+  username                            = "root"
+  password                            = "changeme"
+  backup_retention_period             = "5"
+  final_snapshot_identifier           = "final-db-snapshot-prod"
+  storage_encrypted                   = "true"
+  apply_immediately                   = "true"
+  monitoring_interval                 = "10"
+  cw_alarms                           = "true"
+  cw_sns_topic                        = aws_sns_topic.db_alarms.id
+  db_parameter_group_name             = aws_db_parameter_group.aurora_db_57_parameter_group.id
+  db_cluster_parameter_group_name     = aws_rds_cluster_parameter_group.aurora_57_cluster_parameter_group.id
+  iam_database_authentication_enabled = "true"
 }
 
-resource "aws_instance" "wb3" {
-  ami               = "${var.ami2}"
-  instance_type     = "${var.instance_type}"
-  availability_zone = "${var.public_subnet1_az}"
-  key_name          = "dansweet"
-  vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
-  subnet_id = "${aws_subnet.public-subnet1.id}"
-  associate_public_ip_address = true
-  user_data = "${file("ansible.sh")}"
-  # network_interface {
-  #   device_index = 0
-  #   network_interface_id = aws_network_interface.ani.id
-  # }
-  tags = {
-    Name = "ansible-master"
-  }
-  root_block_device {
-    volume_size           = "30"
-    volume_type           = "gp2"
-    encrypted             = false
-    delete_on_termination = true
-  }
+resource "aws_db_parameter_group" "aurora_db_57_parameter_group" {
+  name        = "test-aurora-db-57-parameter-group"
+  family      = "aurora-mysql5.7"
+  description = "test-aurora-db-57-parameter-group"
 }
 
-resource "aws_instance" "wb4" {
-  ami               = "${var.ami2}"
-  instance_type     = "${var.instance_type}"
-  availability_zone = "${var.public_subnet2_az}"
-  key_name          = "dansweet"
-  vpc_security_group_ids = ["${aws_security_group.wpsg.id}"]
-  subnet_id = "${aws_subnet.public-subnet2.id}"
-  associate_public_ip_address = true
-  user_data = "${file("nginx.sh")}"
-  # network_interface {
-  #   device_index = 0
-  #   network_interface_id = aws_network_interface.ani.id
-  # }
-  tags = {
-    Name = "nginx"
-  }
-  root_block_device {
-    volume_size           = "30"
-    volume_type           = "gp2"
-    encrypted             = false
-    delete_on_termination = true
-  }
+resource "aws_rds_cluster_parameter_group" "aurora_57_cluster_parameter_group" {
+  name        = "test-aurora-57-cluster-parameter-group"
+  family      = "aurora-mysql5.7"
+  description = "test-aurora-57-cluster-parameter-group"
 }
