@@ -1,3 +1,7 @@
+resource "aws_s3_bucket" "codepipeline_artifacts" {
+  bucket = "tcit-cicd-codepipeline-artifacts"
+}
+
 resource "aws_iam_role" "tf-codepipeline-role" {
   name = "tf-codepipeline-role"
 
